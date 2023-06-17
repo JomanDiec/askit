@@ -1,0 +1,121 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Ask it</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static "css/bootstrap_superhero.css" %}">
+        <link rel="stylesheet"
+              href="{% static "css/font-awesome_superhero.min.css" %}">
+        <link rel="stylesheet" href="{% static "css/prism_superhero.css" %}">
+        <link rel="stylesheet" href="{% static "css/custom_superhero.min.css" %}">
+        <link rel="stylesheet" href="{% static "css/custom_joman.css" %}">
+        <!-- Global Site Tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-23019901-1"></script>
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+              integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+              crossorigin="anonymous"
+              referrerpolicy="no-referrer"/>
+<style>
+    div.center {
+      text-align: center;
+    }
+
+    div.left {
+      text-align: left;
+    }
+
+    div.right {
+      text-align: right;
+    } 
+
+    div.justify {
+      text-align: justify;
+    }
+{% block style%}{% endblock %}
+</style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
+            <div class="container">
+                <a href={% url "ask_it:home" %} class="navbar-brand">Ask it!</a>
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarResponsive"
+                        aria-controls="navbarResponsive"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.GET.sort == "oldest" %}btn btn-light{% endif %}"
+                               href='{% url 'ask_it:home' %}?sort=oldest'>Oldest</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.GET.sort == "popular" %}btn btn-light{% endif %}"
+                               href='{% url 'ask_it:home' %}?sort=popular'>Most Popular</a>
+                        </li>
+                        {% if user.is_authenticated %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle"
+                                   data-bs-toggle="dropdown"
+                                   href="#"
+                                   id="download"> {{ request.user }} <span class="caret"></span></a>
+                                <div class="dropdown-menu" aria-labelledby="download">
+                                    <a class="dropdown-item" href={% url 'ask_it:change_password' %}>Change Password</a>
+                                    <a class="dropdown-item" href={% url 'ask_it:ask_logout' %}>Logout</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item">Cookie Jar <i class="fas fa-cookie-bite" style='color:#ce4300'>x{{ request.user.cookie_jar.cookies }}</i></a>
+                                </div>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href={% url 'ask_it:ask_login' %}>Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href={% url 'ask_it:registration' %}>Register</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                    <ul class="navbar-nav ms-md-auto">
+                      <li>
+                        <form action= {% url 'ask_it:home' %} method='get' class="d-flex">
+                            <input class="form-control me-sm-2"
+                                   name='search_term'
+                                   type="text"
+                                   placeholder="Search">
+                            <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+                        </form>
+                      </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+      </div>
+
+
+            {% block body %}{% endblock %}
+    <div class='container'>
+      <div class='row'>
+        <div class='col-1' ></div>
+          <div class='right'>
+            <a href="#top">Back to top</a>   
+          </div>
+      </div>
+    </div>
+            <script src="{% static "js/jsquery.js" %}"></script>
+            <script src="{% static "js/bootstrap_superhero.js" %}"></script>
+            <script src="{% static "js/prism_superhero.js" %}" data-manual></script>
+            <script src="{% static "js/custom_superhero.js" %}"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/fontawesome.min.js"
+                    integrity="sha512-vF2g7ozd8M2AA8re3eCrfJT2vvrOmIbW9JhodInQHN5Xjg6ec6nJpMJQcwuXm+aOhQze+CrM2rFQLftMtQA+bA=="
+                    crossorigin="anonymous"
+                    referrerpolicy="no-referrer"></script>
+        </body>
+    </html>

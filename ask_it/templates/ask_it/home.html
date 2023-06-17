@@ -1,0 +1,186 @@
+<!-- logout-question button
+        fadeout upvote
+        no give cookie
+        no your account tab -->
+
+{% extends "ask_it/base.html" %}
+{% load custom_tags %}
+
+{% block style %}
+
+img {
+  max-height: 10%;
+  max-width: 10%;
+}
+
+{% endblock %}
+
+{% block body %}
+
+
+
+
+
+<div class='container'>
+  <div class="right" style= 'padding-right: 10px'>
+    <a class="btn btn-primary" href={% url 'ask_it:question' %}>New Question</a>
+    </div>
+    <br>
+{% for question in page_obj %}
+<div class='container'>
+  <div class='row'>
+    <div class='col-1' style="text-align:center" >
+{% comment %} upvote chevron and number {% endcomment %}
+  <div style='float:right ; padding:30px 10px ; transform: scale(2.5) ; line-height: 20%'>
+    <a href= "{% url 'ask_it:upvote' question_id=question.id %}?next={{request.get_full_path}}" ><i class="fas fa-angle-up"  style='{% upvote_filter user question.id %}'></i></a>
+    <div style='transform:scale(0.5); {% upvote_filter user question.id %}'>
+    {{question.upvotes}}
+    </div>
+  </div>
+  
+  </div>
+
+<div class='col-11'>
+<div class="card">
+  <div class="card-body">
+    <h4 class="card-title"><a href="{%  url 'ask_it:question_thread' question_thread_id=question.id %}">{{question.question}}</a></h4>
+    <h6 class="card-subtitle mb-2 text-muted">Posted by {{question.author}} {{question.whenpublished}}<span style='color:#ce4300'>{% if question.cookies != 0 %}
+    <i class="fas fa-cookie-bite">x{{question.cookies}}</i>{% endif %}</span></h6>
+    {% if question.image %}
+    <h4>{{ question.image_caption }}</h4>
+      <img src='{{question.image.url}}' alt='{{ question.image_caption }}'>
+    {% endif %}
+    <p class="card-text">{{question.message}}</p>
+    <a href="{%  url 'ask_it:question_thread' question_thread_id=question.id %}" class="card-link" style='text-decoration: initial'>{{ question.reply_set.all|length }} response{{question.reply_set.all|pluralize}}</a>
+    {% if user.is_authenticated %}
+    {% comment %} delete post link if own post, give cookie link if not own post {% endcomment %}
+    {% if user != question.author and user.cookie_jar.cookies > 0 %}<a href="{% url 'ask_it:give_cookie' receiver_id=question.id %}?next={{request.get_full_path}}" class="card-link" style='text-decoration: initial ' onclick="return confirm('Give a cookie to {{question.author}}?')">Give Cookie</a>
+    {% elif user == question.author %}
+      <a href="{% url 'ask_it:question_delete' question_id=question.id %}" class="card-link" style='text-decoration: initial' onclick="return confirm('Are you sure?')">Delete</a>
+    {% endif %}
+    {% endif %}
+  </div>
+  </div>
+</div>
+</div>
+</div>
+<br>
+
+{% endfor %}
+{% comment %} paginator links {% endcomment %}
+<div class='container'>
+<div class='row'>
+  <div class='col-1' >
+  </div>
+  <div class='col-11'>
+    {% if size == 0 or questions.count == 0 %}
+    No results found
+    {% endif %}
+<ul class="pagination">
+  {% if page_obj.has_previous and search != '' %}
+  <li class="page-item">
+    <a class="page-link" href='{{ request.path }}?search_term={{ search }}&page=1'>&laquo; first</a>
+  </li>
+  <li class="page-item">
+      <a class="page-link" href="{{ request.path }}?search_term={{ search }}&page={{ page_obj.previous_page_number }}">previous</a>
+  </li>
+  {% elif page_obj.has_previous and sort != None %}
+  <li class="page-item">
+    <a class="page-link" href='{{ request.path }}?sort={{ sort }}&page=1'>&laquo; first</a>
+  </li>
+  <li class="page-item">
+      <a class="page-link" href="{{ request.path }}?sort={{ sort }}&page={{ page_obj.previous_page_number }}">previous</a>
+  </li>
+  {% elif page_obj.has_previous %}
+  <li class="page-item">
+      <a class="page-link" href="?page=1">&laquo; first</a>
+  </li>
+  <li class="page-item">
+      <a class="page-link" href="?page={{ page_obj.previous_page_number }}">previous</a>
+  </li>
+  {% else %}
+  <li class="page-item disabled">
+      <a class="page-link" href="#">&laquo; first</a>
+  </li>
+  <li class="page-item disabled">
+      <a class="page-link" href="#">previous</a>
+  </li>
+  {% endif %}
+
+  {% if page_obj.has_next and search != '' %}
+  <li class="page-item">
+      <a class="page-link" href="{{ request.path }}?search_term={{ search }}&page={{ page_obj.next_page_number }}">next</a>
+  </li>
+  <li class="page-item">
+      <a class="page-link" href="{{ request.path }}?search_term={{ search }}&page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+  </li>
+  {% elif page_obj.has_next and sort is not None %}
+  <li class="page-item">
+      <a class="page-link" href="{{ request.path }}?sort={{ sort }}&page={{ page_obj.next_page_number }}">next</a>
+  </li>
+  <li class="page-item">
+      <a class="page-link" href="{{ request.path }}?sort={{ sort }}&page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+  </li>
+  {% elif page_obj.has_next %}
+  <li class="page-item">
+      <a class="page-link" href="?page={{ page_obj.next_page_number }}">next</a>
+  </li>
+  <li class="page-item">
+      <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+  </li>        
+  {% else %}
+  <li class="page-item disabled">
+      <a class="page-link" href="#">next</a>
+  </li>
+  <li class="page-item disabled">
+      <a class="page-link" href="#">last &raquo;</a>
+  </li>
+  {% endif %}
+</ul>
+Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+</div>
+</div>
+</div>
+</div>
+
+<!-- 
+
+Arlene implementation
+
+<br>
+
+
+
+
+  <div class="right">
+    <a type="button" class="btn btn-primary" style= 'margin-bottom: -50px' href={% url 'ask_it:question' %}>New Question</a>
+  </div>
+
+  <div class="container-fluid">
+
+  {% for question in questions %}
+
+  <div class="bs-docs-section">
+    <div class="row align-items-center">
+      <div style='text-align:center; width:10%'>
+        <i class="fas fa-angle-up" style="text-align: center; transform: scale(2.5)"></i>
+        <h4 style='transform:scale(0.85)'>2000</h4>  
+      </div>
+  
+    <div class="card" style="width:90%; margin-bottom: -40px;">
+      <div class="card-body">
+        <h4 class="card-title">{{question.question}}</h4>
+        <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+        <a href="#" class="card-link">Card link</a>
+        <a href="#" class="card-link">Another link</a>
+      </div>
+    </div>
+  </div>
+
+  {% endfor %}
+
+</div> -->
+
+
+{% endblock %}

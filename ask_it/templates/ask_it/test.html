@@ -1,0 +1,54 @@
+{% load static %}
+{% load custom_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  </head>
+<body>
+
+{% mute '<i class="fas fa-angle-up"></i>test'%}
+
+  <i class="fab fa-acquisitions-incorporated"></i><br>
+
+{{ author | modify_name:"first_name"}}<br>
+
+{{ author | modify_name:"last_name"}}<br>
+
+{{ author | modify_name:"title_case"}}<br>
+
+{{ author | modify_name:"first_name" | modify_name:"title_case"}}<br>
+
+{% current_time "%d/%m/%Y %H:%M:%S %p" %}</br>
+
+{% upper 'joman' %}
+
+<h1>Django Image Uploading</h1>
+
+<div class="container">
+
+  <!--Simple Form-->
+  <h2 class="my-4">Add a new image</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+        <input type="file" name="upload" accept="image/*">
+        <br>
+        <button class="btn btn-dark my-4" type="submit">Submit</button>
+  </form>
+
+</div>
+
+<ul>
+  {% for post in images %}
+    <h2>{{ post.caption }}</h2>
+    <img src="{{ post.cover.url}}" alt="{{ post.caption }}">
+  {% endfor %}
+</ul>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/fontawesome.min.js" integrity="sha512-ywaT8M9b+VnJ+jNG14UgRaKg+gf8yVBisU2ce+YJrlWwZa9BaZAE5GK5Yd7CBcP6UXoAnziRQl40/u/qwVZi4Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</body>
+</html>

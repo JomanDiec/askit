@@ -1,0 +1,145 @@
+{% extends "ask_it/base.html" %}
+{% load custom_tags %}
+
+{% block style %}
+.center_frame {
+  margin: auto;
+  width: 60%;
+  padding: 10px;
+}
+.align_right {
+  float: right;
+  padding: 0px;
+}
+.align_left {
+  float: left;
+  padding: 0px;
+}
+div.relative {
+  position: relative;
+  left: -185px;
+}
+.item1 { grid-area: header; }
+.item2 { grid-area: menu; }
+.item3 { grid-area: main; }
+.item4 { grid-area: right; }
+.item5 { grid-area: footer; }
+
+.grid-container {
+  display: grid;
+  grid-template-areas:
+    'header header header header header header'
+    'menu main main main right right'
+    'menu footer footer footer footer footer';
+  grid-gap: 10px;
+  background-color: #2196F3;
+  padding: 10px;
+}
+
+img {
+  max-height: 100%;
+  max-width: 100%;
+}
+
+{% endblock %}
+
+{% block body %}
+<div class='container'>
+  <div class='row'>
+    <div class='col-1' style="text-align:center" >
+  <div style='float:right ; padding:30px 10px ; transform: scale(2.5) ; line-height: 20%'>
+    <a href= "{% url 'ask_it:upvote' question_id=question.id %}?next={{request.path}}" ><i class="fas fa-angle-up" style='{% upvote_filter user question.id %}'></i></a>
+    <div style='transform:scale(0.5) ; {% upvote_filter user question.id %}'>
+    {{question.upvotes}}
+    </div>
+  </div>
+  </div>
+<div class='col-11'>
+<div class="card">
+  <div class="card-body">
+    <h4 class="card-title"><a href="{%  url 'ask_it:question_thread' question_thread_id=question.id %}">{{question.question}}</a></h4>
+    <h6 class="card-subtitle mb-2 text-muted">Posted by {{question.author}} {{question.whenpublished}}<span style='color:#ce4300'>{% if question.cookies != 0 %}
+    <i class="fas fa-cookie-bite">x{{question.cookies}}</i>{% endif %}</span></h6>
+    {% if question.image %}
+    <h4>{{ question.image_caption }}</h4>
+      <img src='{{question.image.url}}' alt='{{ question.image_caption }}'>
+    {% endif %}
+    <p class="card-text">{{question.message}}</p>
+    <a href="#" class="card-link" style='text-decoration: initial'>{{ question.reply_set.all|length }} response{% if question.reply_set.all|length != 1 %}s{% endif %}</a>
+    {% if user.is_authenticated %}
+    {% if user != question.author and user.cookie_jar.cookies > 0%}<a href="{% url 'ask_it:give_cookie' receiver_id=question.id %}?next={{request.path}}" class="card-link" style='text-decoration: initial ' onclick="return confirm('Give a cookie to {{question.author}}?')">Give Cookie</a>
+    {% elif user == question.author %}
+    <a href="{% url 'ask_it:question_delete' question_id=question.id %}" class="card-link" style='text-decoration: initial' onclick="return confirm('Are you sure?')">Delete</a>
+    {% endif %}
+    {% endif %}
+  </div>
+  </div>
+</div>
+  </div>
+</div>
+<!-- </div>
+</div> -->
+{% if user.is_authenticated %}
+<div class='container'>
+  <div class='row'>
+    <div class='col-1' ></div>
+    <div class='col-7'>
+      <div  id='pin_form' class="form-group">
+      <form action= "{% url 'ask_it:thread_reply' question_thread_id=question.id %}?next={% url 'ask_it:question_thread' question_thread_id=question.id %}?next=invalid_input"  method="post">
+      {% csrf_token %}
+        <!-- <div class='center_frame'> -->
+          <br>
+          {% if request.GET.next == "invalid_input" %}
+          <div class="form-group has-danger">
+            <textarea name='message' class="form-control" id="message" rows="4" placeholder='Reply'></textarea>
+            <div style= 'color:#f7746a'>Your reply cannot be blank</div>
+          </div>
+          {% else %}
+          <textarea name='message' class="form-control" id="message" rows="4" placeholder='Reply'></textarea>
+          {% endif %}
+          <div class='right'>
+          <button style='margin-top:15px' type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        <!-- </div> -->
+      </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<hr>
+
+{% for reply in question.reply_set.all %}
+
+<div class='container'>
+  <div class='row'>
+    <div class='col-1' style="text-align:center" >
+<!-- <div id="wrapperDiv"> -->
+  <div style='float:right ; padding:30px 10px ; transform: scale(2.5) ; line-height: 20%'>
+    <a href= "{% url 'ask_it:upvote_reply' reply_id=reply.id %}?next={{request.path}}" ><i class="fas fa-angle-up" style='{% reply_filter user reply.id %}'></i></a>
+    <div style='transform:scale(0.5) ; {% reply_filter user reply.id %}'>
+    {{reply.upvotes}}
+    </div>
+  </div>
+  <!-- </div> -->
+  </div>
+  <!-- </div> -->
+<div class='col-11'>
+  <div class="card-body">
+    <h6 class="card-subtitle mb-2 text-muted">Posted by {{reply.author}} {{reply.whenpublished}}<span style='color:#ce4300'>{% if reply.cookies != 0 %}
+    <i class="fas fa-cookie-bite">x{{reply.cookies}}</i>{% endif %}</span></h6>
+    <p class="card-text">{{reply.message}}</p>
+    {% if user.is_authenticated %}
+    {% if user != reply.author %}<a href="{% url 'ask_it:give_reply_cookie' receiver_id=reply.id %}?next={{request.path}}" class="card-link" style='text-decoration: initial ' onclick="return confirm('Give a cookie to {{question.author}}?')">Give Cookie</a>
+    {% elif user == reply.author %}
+    <a href= "{% url 'ask_it:reply_delete' reply_id=reply.id %}?next={{request.path}}" class="card-link" style='text-decoration: initial' onclick="return confirm('Are you sure?')">Delete</a>
+    {% endif %}
+    {% endif %}
+  </div>
+  </div>
+  </div>
+</div>
+
+{% endfor %}
+{% endblock %}

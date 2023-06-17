@@ -1,0 +1,44 @@
+{% extends "ask_it/base.html" %}
+
+
+{% block style %}
+.center_frame {
+  margin: auto;
+  width: 60%;
+  padding: 10px;
+}
+.align_right {
+  float: right;
+  padding: 0px;
+}
+
+{% endblock %}
+
+{% block body %}
+    <div style='margin:40px -25px 0px -25px' id='pin_form' class="form-group">
+      <form action= "{% url 'ask_it:question_form' %}?next={% url 'ask_it:question' %}?next=invalid_input" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class='center_frame'>
+          {% if request.GET.next == "invalid_input" %}
+          <div class="form-group has-danger">
+            <input name='question' type="text" class="form-control is-invalid" placeholder="Title" id="question">
+            <div class="invalid-feedback" style= 'color:#f7746a'>Your post must have a title.</div>
+          </div>
+          {% else %}
+          <input name='question' type="text" class="form-control" placeholder="Title" id="inputDefault">
+          {% endif %}
+          <br>
+          <textarea name='message' class="form-control" id="message" rows="4" placeholder='Text (optional)'></textarea>
+          <br>
+          <h6>Add Image (optional)</h6>
+          <input type="file" name="upload" accept="image/*">
+          <input type='text' name='caption' class='form-control' placeholder='Caption (optional)'>
+          <br>
+          <div class='right'>
+            <button style='margin-top:15px' type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "ask_it/base.html" %}
+
+{% block body %}
+<!-- <style>
+.center_frame {
+  margin: auto;
+  width: 60%;
+  padding: 10px;
+}
+.align_right {
+  float: right;
+  padding: 0px;
+}
+.align_left {
+  float: left;
+  padding: 0px;
+}
+div.relative {
+  position: relative;
+  left: -185px;
+}
+.item1 { grid-area: header; }
+.item2 { grid-area: menu; }
+.item3 { grid-area: main; }
+.item4 { grid-area: right; }
+.item5 { grid-area: footer; }
+
+.grid-container {
+  display: grid;
+  grid-template-areas:
+    'header header header header header header'
+    'menu main main main right right'
+    'menu footer footer footer footer footer';
+  grid-gap: 10px;
+  background-color: #2196F3;
+  padding: 10px;
+}
+</style> -->
+<div class='container'>
+  <div class='row'>
+    <div class='col-1' style="text-align:center" >
+      <h4><i class="fas fa-angle-up"></i></h4>
+      <h4>
+      {{question.upvotes}}
+      </h4>
+<!-- <div id="wrapperDiv">
+  <div style='float:left ; text-align: center; padding:30px 30px ; transform: scale(2.5) ; line-height: 20%'>
+    <i class="fas fa-angle-up"></i>
+    <div style='transform:scale(0.5)'>
+    {{question.upvotes}}
+    </div>
+  </div>
+  </div> -->
+  </div>
+<div class='col-11'>
+<div class="card">
+  <div class="card-body">
+    <h4 class="card-title"><a href="{%  url 'ask_it:question_thread' question_thread_id=question.id %}">{{question.question}}</a></h4>
+    <h6 class="card-subtitle mb-2 text-muted">Posted by {{question.author}} {{question.whenpublished}}<span style='color:#ce4300'>{% if question.cookies != 0 %}
+    <i class="fas fa-cookie-bite">x{{question.cookies}}</i>{% endif %}</span></h6>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    <a href="#" class="card-link">Card link</a>
+    <a href="#" class="card-link">Another link</a>
+<!-- <div class='col'></div>
+<div class='col'></div> -->
+  </div>
+  </div>
+</div>
+</div>
+</div>
+</br>
+<div class='container'>
+  <div class='row'>
+    <div class='col-1' >
+    </div>
+    <div class='col-11' >
+      <form action= {% url 'ask_it:question_form' %} method="post">
+      {% csrf_token %}      
+          <textarea name='message' class="form-control" id="message" rows="4" placeholder='Text (optional)'></textarea>
+          <button style='margin-top:15px; float:right' type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+    <!-- <div>
+      <div style='margin:40px -25px 0px -25px' id='pin_form' class="form-group">
+      
+      </div>
+    </div> -->
+</div>
+{% endblock %}

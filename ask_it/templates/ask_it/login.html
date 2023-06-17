@@ -1,0 +1,45 @@
+{% extends "ask_it/base.html" %}
+{% load static %}
+
+{% block body %}
+
+    <div class="container">
+      <div class="page-header">
+        <div class="row">
+          <div class="col-1"></div>
+          <div class="col-lg-8 col-md-7 col-sm-6">
+            <h1>Login</h1>
+          </div>
+          <p></p>
+        </div>
+      </div>
+    </div>
+    
+        <div class="container">
+          <div class="row">
+            <div class="col-1"></div>
+            <div class="col-11">
+              <div class="card">
+                <p></p>
+                <div class="card-body">
+                  <form action= {% url 'ask_it:ask_login_form' %} method="post">
+                  {% csrf_token %} 
+                  <div class="form-group">
+                    <label for='username' class="form-label mt-4">Username</label>
+                    <input type="text" class="form-control" name='username' id="username" aria-describedby="username" placeholder="Enter username">
+                  </div>
+                  <div class="form-group">
+                    <label for='password' class="form-label mt-4">Password</label>
+                    <input type="password" class="form-control" name='password' id="password" placeholder="Enter password">
+                  </div>
+                  <p></p>
+                  <button type="submit" class="btn btn-primary">Login</button>
+                  </form>
+                </div>
+                <p></p>
+                <p></p>
+              </div>
+            </div>
+          </div>
+        </div>
+  {% endblock %}
