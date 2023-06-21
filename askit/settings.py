@@ -88,7 +88,7 @@ WSGI_APPLICATION = 'askit.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-if ON_HEROKU:
+if IS_HEROKU_APP:
     DATABASE_URL = 'postgresql://<postgresql>'
 else:
     DATABASE_URL = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
