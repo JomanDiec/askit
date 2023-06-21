@@ -1,1 +1,1 @@
-web: gunicorn askitproject.wsgi –log-file -
+web: gunicorn askit.wsgi –-log-file -
