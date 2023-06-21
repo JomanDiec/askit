@@ -111,7 +111,6 @@ else:
         }
     }
 
-DATABASE_URL = {'default': dj_database_url.config(default=DATABASES)}
 
 
 # Password validation
